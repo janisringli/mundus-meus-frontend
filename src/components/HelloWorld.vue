@@ -1,38 +1,65 @@
-<script setup>
-import { ref } from 'vue'
-
-defineProps({
-  msg: String,
-})
-
-const count = ref(0)
-</script>
-
 <template>
-  <h1>{{ msg }}</h1>
-
-  <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
-    <p>
-      Edit
-      <code>components/HelloWorld.vue</code> to test HMR
-    </p>
+<div id="app">
+  <div v-if="error">
+    {{ error }}
   </div>
 
-  <p>
-    Check out
-    <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank"
-      >create-vue</a
-    >, the official Vue + Vite starter
-  </p>
-  <p>
-    Install
-    <a href="https://github.com/vuejs/language-tools" target="_blank">Volar</a>
-    in your IDE for a better DX
-  </p>
-  <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
-</template>
+  <form id="form" v-on:submit="handleSubmit" v-else>
+    <label for="name">Name</label>
+    <input id="name" v-model="modifiedData.data.postTitle" type="text" name="name">
 
+    <label for="description">Description</label>
+    <input id="description" v-model="modifiedData.data.postDescription" type="text" name="description">
+
+    <input type="submit" value="Submit">
+  </form>
+    <button @click="getAllPosts">Get Posts</button>
+</div>
+</template>
+<script>
+import axios from 'axios'
+import { getAllPosts } from '../services/PostService.js'
+
+
+export default {
+  name: 'CreatePost',
+ data() {
+    return {
+      modifiedData: {
+        data: {
+          postTitle: '',
+          postDescription: '',
+        }
+        
+      },
+      error: null
+    }
+  },
+  methods: {
+  async getAllPosts() {
+    const response = await getAllPosts()
+    console.log(response)
+    this.posts = response.data
+  },
+  handleSubmit: async function(e) {
+    console.log(this.modifiedData)
+      e.preventDefault();
+
+      try {
+        const response = await axios.post('http://127.0.0.1:1337/api/tests', this.modifiedData)
+        console.log(response);
+
+
+      } catch(error) {
+        this.error = error;
+        
+      }
+      
+    }
+  }
+
+}
+</script>
 <style scoped>
 .read-the-docs {
   color: #888;
