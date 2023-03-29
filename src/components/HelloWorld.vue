@@ -42,11 +42,10 @@ export default {
     this.posts = response.data
   },
   handleSubmit: async function(e) {
-    console.log(this.modifiedData)
       e.preventDefault();
 
       try {
-        const response = await axios.post('http://127.0.0.1:1337/api/tests', this.modifiedData)
+        const response = await axios.post('http://127.0.0.1:1337/api/posts', this.modifiedData)
         console.log(response);
 
 
